@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/jquery-1.11.1.min.js"></script>
+<script>
+    $.noConflict();
+</script>
+<link id="themecss" rel="stylesheet" type="text/css" href="http://www.shieldui.com/shared/components/latest/css/light/all.min.css" />
+<script type="text/javascript" src="http://www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+</head>
+<body class="theme-light">
+<body style="margin:0; padding:0; background-color:#202020;">
+<div id="chart" style="width:39%; height:455px;"></div>	
+<script type="text/javascript">
+    jQuery(function ($) {
+		var endTimeAfter = new Date(new Date().getTime() - 480*60*1000).toUTCString().replace("GMT", "+0000");
+    	$.support.cors = true;
+        // load the data via ajax
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://172.17.0.2:444/api/v1.2/transfers/?limit=10&endTimeAfter="+encodeURIComponent(endTimeAfter),
+            "method": "GET",
+            "headers": {
+                "authorization": "Basic YWRtaW46YWRtaW4=",
+                "content-type": "application/json"
+            }
+        };
+
+        $.ajax(settings).done(function(response) {
+            // transform the data
+            var success = 0,
+                failed = 0,
+                inprogress = 0;
+
+            for (var i=0; i<response.transferEntries.length; i++) {
+                if (response.transferEntries[i].transferEntry.status == "Processed") {
+                    success++;
+                }
+                else if (response.transferEntries[i].transferEntry.status == "Failed") {
+                    failed++;
+                }
+                else {
+                    inprogress++;
+                }
+            }
+
+            $("#chart").shieldChart({
+                theme: "dark",
+                primaryHeader: {
+                    text: "File Transfer by Status"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                seriesSettings: {
+                    pie: {
+                        enablePointSelection: true
+                    }
+                },
+                tooltipSettings: {
+                    customPointText: "{point.collectionAlias}: {point.y}"
+                },
+                dataSeries: [{
+                    seriesType: 'pie',
+                    collectionAlias: "Number of Files",
+                    data: [
+                        {x: "Processed", y: success, color: "#1E98E4"},
+                        {x: "Failed", y: failed, color: "#FF2A00"},
+                        {x: "In Progress", y: inprogress, color: "#FFC500"}
+                    ]
+                }]
+            });
+        });
+    });
+</script>
+</body>
+</html>

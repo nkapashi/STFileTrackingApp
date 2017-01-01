@@ -1,0 +1,14 @@
+<Alloy>
+        <TabGroup id="mainTabGroup">
+            <Tab id="tab1" onClick="getTransList">
+                <Window id="native">
+                	<TableView id="tableView"/>
+                </Window>
+            </Tab>
+            <Tab id="tab2">
+                <Window id="jquery">
+                	<WebView id="mainView" url="/tab2.html"/>
+                </Window>
+            </Tab>
+        </TabGroup>
+</Alloy>

@@ -1,0 +1,15 @@
+"TabGroup":{
+	backgroundColor:"black",
+},
+"View":{     
+	layout:'vertical',
+}
+"#tab1":{
+	title:"Transfers List", 
+},
+"#tab2":{
+	title:"Transfers Chart", 
+},
+"#tableView":{
+	headerTitle : 'Transfer List',
+}
